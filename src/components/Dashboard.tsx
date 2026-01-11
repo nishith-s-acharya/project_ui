@@ -52,13 +52,7 @@ const Dashboard = () => {
       description: "Personalized health monitoring and recommendations",
       color: "text-green-500",
     },
-    {
-      id: "doctors" as Section,
-      title: "Doctor Booking",
-      icon: Calendar,
-      description: "Easy appointment scheduling with qualified doctors",
-      color: "text-purple-500",
-    },
+
     {
       id: "hospitals" as Section,
       title: "Hospital Locator",
@@ -114,11 +108,11 @@ const Dashboard = () => {
       default:
         return (
           <div
-  className="min-h-screen flex flex-col items-center justify-center bg-cover bg-center relative"
-  style={{
-    backgroundImage: `url('https://imgs.search.brave.com/52LI1m-902n3itp8pwzrzasBEu-3_3s72GcX9Ta5MBU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTMy/NzU2ODg3NS9waG90/by9oZWFsdGhjYXJl/LWJ1c2luZXNzLWdy/YXBoLWRhdGEtYW5k/LWdyb3d0aC1pbnN1/cmFuY2UtaGVhbHRo/Y2FyZS1kb2N0b3It/YW5hbHl6aW5nLW1l/ZGljYWwtb2YuanBn/P2I9MSZzPTYxMng2/MTImdz0wJms9MjAm/Yz1Lb0xWbncxMWs3/eGFrOVJIdVBiVXpq/cG1BY1JaaWd5N2pH/d1g5dGxKU1kwPQ')`,
-  }}
->
+            className="min-h-screen flex flex-col items-center justify-center bg-cover bg-center relative"
+            style={{
+              backgroundImage: `url('https://imgs.search.brave.com/52LI1m-902n3itp8pwzrzasBEu-3_3s72GcX9Ta5MBU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTMy/NzU2ODg3NS9waG90/by9oZWFsdGhjYXJl/LWJ1c2luZXNzLWdy/YXBoLWRhdGEtYW5k/LWdyb3d0aC1pbnN1/cmFuY2UtaGVhbHRo/Y2FyZS1kb2N0b3It/YW5hbHl6aW5nLW1l/ZGljYWwtb2YuanBn/P2I9MSZzPTYxMng2/MTImdz0wJms9MjAm/Yz1Lb0xWbncxMWs3/eGFrOVJIdVBiVXpq/cG1BY1JaaWd5N2pH/d1g5dGxKU1kwPQ')`,
+            }}
+          >
             {/* Overlay */}
             <div className="absolute inset-0 bg-black/40 z-0"></div>
 
@@ -135,7 +129,7 @@ const Dashboard = () => {
             </div>
 
             {/* Feature Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 w-full max-w-4xl px-6 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl px-6 relative z-10">
               {sections.map((section) => {
                 const Icon = section.icon;
                 return (
@@ -160,22 +154,22 @@ const Dashboard = () => {
 
   // Placeholder data until Clerk profile is extended
   // ✅ Pull from Clerk metadata (set in AuthPage.tsx)
-const userData = {
-  name: (user?.unsafeMetadata?.name as string) || user?.fullName || "Guest",
-  age: (user?.unsafeMetadata?.age as string) || "N/A",
-  gender: (user?.unsafeMetadata?.gender as string) || "N/A",
-  email:
-    (user?.unsafeMetadata?.email as string) ||
-    user?.primaryEmailAddress?.emailAddress ||
-    "Not provided",
-  phone:
-    (user?.unsafeMetadata?.phone as string) ||
-    user?.primaryPhoneNumber?.phoneNumber ||
-    "Not provided",
-  isPregnant: (user?.unsafeMetadata?.isPregnant as boolean) || false,
-  medicalConditions: (user?.unsafeMetadata?.medicalConditions as string[]) || [],
-  emergencyContact: (user?.unsafeMetadata?.emergencyContact as string) || "",
-};
+  const userData = {
+    name: (user?.unsafeMetadata?.name as string) || user?.fullName || "Guest",
+    age: (user?.unsafeMetadata?.age as string) || "N/A",
+    gender: (user?.unsafeMetadata?.gender as string) || "N/A",
+    email:
+      (user?.unsafeMetadata?.email as string) ||
+      user?.primaryEmailAddress?.emailAddress ||
+      "Not provided",
+    phone:
+      (user?.unsafeMetadata?.phone as string) ||
+      user?.primaryPhoneNumber?.phoneNumber ||
+      "Not provided",
+    isPregnant: (user?.unsafeMetadata?.isPregnant as boolean) || false,
+    medicalConditions: (user?.unsafeMetadata?.medicalConditions as string[]) || [],
+    emergencyContact: (user?.unsafeMetadata?.emergencyContact as string) || "",
+  };
 
   return (
     <div className="min-h-screen flex flex-col relative">
@@ -199,9 +193,8 @@ const userData = {
                   onClick={() => setActiveSection(section.id)}
                 >
                   <Icon
-                    className={`h-5 w-5 ${
-                      activeSection === section.id ? "text-white" : section.color
-                    }`}
+                    className={`h-5 w-5 ${activeSection === section.id ? "text-white" : section.color
+                      }`}
                   />
                   <span>{section.title}</span>
                 </Button>

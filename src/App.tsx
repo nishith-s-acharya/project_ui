@@ -30,7 +30,7 @@ const HomeRedirect = () => {
     return (
       <AuthPage
         onBack={() => window.history.back()}
-        onComplete={() => {}}
+        onComplete={() => { }}
       />
     );
   }
@@ -44,8 +44,22 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           {/* Clerk auth routes */}
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/sign-up" element={<SignUp />} />
+          <Route
+            path="/sign-in"
+            element={
+              <div className="flex items-center justify-center min-h-screen w-full">
+                <SignIn />
+              </div>
+            }
+          />
+          <Route
+            path="/sign-up"
+            element={
+              <div className="flex items-center justify-center min-h-screen w-full">
+                <SignUp />
+              </div>
+            }
+          />
 
           {/* Root route → auto-redirect based on details */}
           <Route

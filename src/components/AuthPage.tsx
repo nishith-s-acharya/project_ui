@@ -1,4 +1,4 @@
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, User, Calendar, Heart, Baby, ChevronDown } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
@@ -35,17 +35,17 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
     }
   }, [user, navigate]);
   const [formData, setFormData] = useState<UserData>({
-  name: (user?.unsafeMetadata?.name as string) || '',
-  age: (user?.unsafeMetadata?.age as string) || '',
-  gender: (user?.unsafeMetadata?.gender as string) || '',
-  email: (user?.unsafeMetadata?.email as string) || '',
-  phone: (user?.unsafeMetadata?.phone as string) || '',
-  isPregnant: (user?.unsafeMetadata?.isPregnant as boolean) || false,
-  medicalConditions: (user?.unsafeMetadata?.medicalConditions as string[]) || [],
-  emergencyContact: (user?.unsafeMetadata?.emergencyContact as string) || '',
-  emergencyCountry: (user?.unsafeMetadata?.emergencyCountry as string) || '+91',
-});
-  
+    name: (user?.unsafeMetadata?.name as string) || '',
+    age: (user?.unsafeMetadata?.age as string) || '',
+    gender: (user?.unsafeMetadata?.gender as string) || '',
+    email: (user?.unsafeMetadata?.email as string) || '',
+    phone: (user?.unsafeMetadata?.phone as string) || '',
+    isPregnant: (user?.unsafeMetadata?.isPregnant as boolean) || false,
+    medicalConditions: (user?.unsafeMetadata?.medicalConditions as string[]) || [],
+    emergencyContact: (user?.unsafeMetadata?.emergencyContact as string) || '',
+    emergencyCountry: (user?.unsafeMetadata?.emergencyCountry as string) || '+91',
+  });
+
   const [nameError, setNameError] = useState('');
   const [ageError, setAgeError] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -57,7 +57,7 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
     flag: '🇮🇳',
     length: 10
   });
-  
+
   const [emergencyPhoneCountry, setEmergencyPhoneCountry] = useState({
     code: '+91',
     name: 'India',
@@ -118,14 +118,14 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
     } else {
       // Update both the emergency country state and form data
       setEmergencyCountry(country);
-      
+
       // Use a functional update to ensure we have the latest state
       setFormData(prev => {
         const newFormData = {
           ...prev,
           emergencyCountry: country.code
         };
-        
+
         // Validate with the new country's length requirements
         if (prev.emergencyContact) {
           const expectedLength = country.length;
@@ -141,7 +141,7 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
         } else {
           setEmergencyContactError('');
         }
-        
+
         return newFormData;
       });
     }
@@ -166,22 +166,22 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
       }));
       return;
     }
-    
+
     // For string fields
     const stringValue = typeof value === 'string' ? value : String(value);
-    
+
     // Update form data for string fields
     setFormData(prev => ({
       ...prev,
       [field]: stringValue
     }));
-    
+
     // Field validation
     if (field === 'phone' || field === 'emergencyContact') {
       // Only allow numbers and update the form data
       if (stringValue === '' || /^\d*$/.test(stringValue)) {
         setFormData(prev => ({ ...prev, [field]: stringValue }));
-        
+
         // Field-specific validation
         if (field === 'phone') {
           const expectedLength = phoneCountry.length;
@@ -198,7 +198,7 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
           // Get the current emergency country from state
           const currentCountry = countryCodes.find(c => c.code === formData.emergencyCountry) || emergencyCountry;
           const expectedLength = currentCountry.length;
-          
+
           // First check if the input is empty or contains only digits
           if (stringValue === '' || /^\d*$/.test(stringValue)) {
             // Then validate the length based on country
@@ -222,7 +222,7 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
       }
       return;
     }
-    
+
     // Name validation
     if (field === 'name') {
       const nameRegex = /^[A-Za-z\s]+$/;
@@ -232,7 +232,7 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
         setNameError('');
       }
     }
-    
+
     // Email validation
     if (field === 'email') {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -247,40 +247,40 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
   const handleMedicalConditionChange = (condition: string, checked: boolean) => {
     setFormData(prev => ({
       ...prev,
-      medicalConditions: checked 
+      medicalConditions: checked
         ? [...prev.medicalConditions, condition]
         : prev.medicalConditions.filter(c => c !== condition)
     }));
   };
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (currentStep < totalSteps) {
-    setCurrentStep(prevStep => prevStep + 1);
-  } else {
-    const formattedData = {
-      ...formData,
-      phone: phoneCountry.code + formData.phone,
-      emergencyContact: emergencyPhoneCountry.code + formData.emergencyContact
-    };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (currentStep < totalSteps) {
+      setCurrentStep(prevStep => prevStep + 1);
+    } else {
+      const formattedData = {
+        ...formData,
+        phone: phoneCountry.code + formData.phone,
+        emergencyContact: emergencyPhoneCountry.code + formData.emergencyContact
+      };
 
-    // ✅ Save to Clerk metadata
-    if (user) {
-      await user.update({
-        unsafeMetadata: { detailsFilled: true, ...formattedData },
-      });
+      // ✅ Save to Clerk metadata
+      if (user) {
+        await user.update({
+          unsafeMetadata: { detailsFilled: true, ...formattedData },
+        });
+      }
+
+      onComplete(formattedData);
+      navigate("/dashboard"); // ✅ Redirect to dashboard
     }
-
-    onComplete(formattedData);
-    navigate("/dashboard"); // ✅ Redirect to dashboard
-  }
-};
+  };
 
   const canProceed = () => {
     // Validate age is within reasonable range (1-120)
     const age = parseInt(formData.age, 10);
     const isAgeValid = !isNaN(age) && age >= 1 && age <= 120;
-    
+
     switch (currentStep) {
       case 1:
         return formData.name && formData.age && formData.gender && !nameError && !ageError && isAgeValid;
@@ -299,49 +299,48 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative">
       {/* Background Image with Overlay */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${medicalHeroBg})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/70 to-secondary/80"></div>
       </div>
-      
+
       <div className="w-full max-w-2xl relative z-10 px-4">
         <div className="relative mb-8">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={onBack}
             className="absolute left-0 top-0"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
-          
+
           <div className="text-center">
             <h1 className="text-3xl font-bold text-foreground mb-2">Welcome to AIDA</h1>
             <p className="text-muted-foreground">
               Let's gather some information to provide you with personalized healthcare assistance
             </p>
           </div>
-          
+
           {/* Progress Bar */}
           <div className="mt-6 max-w-md mx-auto">
             <div className="flex justify-between mb-2">
               {Array.from({ length: totalSteps }, (_, i) => (
                 <div
                   key={i}
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    i + 1 <= currentStep 
-                      ? 'bg-primary text-white' 
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${i + 1 <= currentStep
+                      ? 'bg-primary text-white'
                       : 'bg-muted text-muted-foreground'
-                  }`}
+                    }`}
                 >
                   {i + 1}
                 </div>
               ))}
             </div>
             <div className="h-2 bg-muted rounded-full">
-              <div 
+              <div
                 className="h-full bg-primary rounded-full transition-all duration-300"
                 style={{ width: `${(currentStep / totalSteps) * 100}%` }}
               />
@@ -376,7 +375,7 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
               Step {currentStep} of {totalSteps}
             </CardDescription>
           </CardHeader>
-          
+
           <CardContent className="p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               {currentStep === 1 && (
@@ -414,11 +413,11 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
                       )}
                     </div>
                   </div>
-                  
+
                   <div>
                     <Label>Gender</Label>
-                    <RadioGroup 
-                      value={formData.gender} 
+                    <RadioGroup
+                      value={formData.gender}
                       onValueChange={(value) => handleInputChange('gender', value as string)}
                       className="flex flex-row space-x-6 mt-2"
                     >
@@ -509,7 +508,6 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
                             value={formData.phone}
                             placeholder={`Enter ${phoneCountry.length}-digit number`}
                             onChange={(e) => handleInputChange('phone', e.target.value)}
-                            placeholder="1234567890"
                             className={`pl-3 ${phoneError ? 'border-red-500' : ''}`}
                             required
                           />
@@ -534,7 +532,7 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
                           <Checkbox
                             id={condition}
                             checked={formData.medicalConditions.includes(condition)}
-                            onCheckedChange={(checked) => 
+                            onCheckedChange={(checked) =>
                               handleMedicalConditionChange(condition, !!checked)
                             }
                           />
@@ -545,7 +543,7 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
                       ))}
                     </div>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="emergencyContact">Emergency Contact Number</Label>
                     <div className="flex gap-2">
@@ -604,7 +602,7 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
                                 ...prev,
                                 emergencyContact: value
                               }));
-                              
+
                               if (value.length > 0 && value.length < emergencyPhoneCountry.length) {
                                 setEmergencyContactError(`Phone number should be ${emergencyPhoneCountry.length} digits for ${emergencyPhoneCountry.name}`);
                               } else if (value.length > emergencyPhoneCountry.length) {
@@ -637,7 +635,7 @@ const AuthPage = ({ onBack, onComplete }: AuthPageProps) => {
                 >
                   Previous
                 </Button>
-                
+
                 <Button
                   type="submit"
                   variant="medical"

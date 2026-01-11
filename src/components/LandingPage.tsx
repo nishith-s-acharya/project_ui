@@ -98,7 +98,7 @@ const LandingPage = ({ onSignIn }: LandingPageProps) => {
           </div>
 
           {/* Features Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
             <FeatureCard
               icon={Brain}
               title="AI Chatbot"
@@ -109,11 +109,7 @@ const LandingPage = ({ onSignIn }: LandingPageProps) => {
               title="Health Tracking"
               description="Personalized health monitoring and recommendations"
             />
-            <FeatureCard
-              icon={Stethoscope}
-              title="Doctor Booking"
-              description="Easy appointment scheduling with qualified doctors"
-            />
+
             <FeatureCard
               icon={Shield}
               title="Hospital Locator"
